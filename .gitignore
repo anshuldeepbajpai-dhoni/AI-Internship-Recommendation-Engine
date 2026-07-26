@@ -1,7 +1,33 @@
+# Virtual environment
 .venv/
+venv/
+env/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Pytest
+.pytest_cache/
+
+# Jupyter
 .ipynb_checkpoints/
+
+# IDE
 .vscode/
 .idea/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Environment variables
+.env
+*.env
+
+# Logs
+*.log

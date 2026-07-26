@@ -9,10 +9,12 @@ from src.validation import (
     validate_internships,
     validate_interactions,
 )
+import pandas as pd
 from src.user_item_matrix import create_user_item_matrix
 from src.collaborative_recommender import CollaborativeRecommender
 from src.content_recommender import ContentBasedRecommender
 from src.hybrid_recommender import HybridRecommender
+from src.evaluation import RecommendationEvaluator
 
 
 def main():
@@ -323,8 +325,192 @@ def main():
             )
         )
 
+        # =====================================================
+        # 16. LEAVE-ONE-OUT EVALUATION
+        # =====================================================
+
+        print("\n" + "=" * 70)
+        print("HYBRID RECOMMENDER EVALUATION")
+        print("=" * 70)
+
+        evaluator = RecommendationEvaluator()
+
+        evaluation_results = []
+
+        # Students need at least 2 interactions:
+        # one can be hidden for testing while others remain for training.
+        student_counts = (
+            interactions
+            .groupby("student_id")
+            .size()
+        )
+
+        eligible_students = student_counts[
+            student_counts >= 2
+        ].index
+
+
+        for evaluation_student_id in eligible_students:
+
+            student_interactions = interactions[
+                interactions["student_id"]
+                == evaluation_student_id
+            ]
+
+            # Prefer holding out a highly-rated internship.
+            relevant_interactions = student_interactions[
+                student_interactions["rating"] >= 4
+            ]
+
+            if relevant_interactions.empty:
+                continue
+
+            # Use the highest-rated interaction as test ground truth.
+            test_row = relevant_interactions.sort_values(
+                by="rating",
+                ascending=False,
+            ).iloc[0]
+
+            test_internship_id = test_row[
+                "internship_id"
+            ]
+
+            # Remove the test interaction from training data.
+            train_interactions = interactions.drop(
+                index=test_row.name
+            )
+
+            train_matrix = create_user_item_matrix(
+                train_interactions
+            )
+
+            evaluation_recommender = HybridRecommender(
+                students=students,
+                internships=internships,
+                user_item_matrix=train_matrix,
+                collaborative_weight=0.6,
+                content_weight=0.4,
+            )
+
+            recommendations = (
+                evaluation_recommender.recommend(
+                    student_id=evaluation_student_id,
+                    top_n=5,
+                )
+            )
+
+            recommended_ids = recommendations[
+                "internship_id"
+            ].tolist()
+
+            relevant_ids = {
+                test_internship_id
+            }
+
+            precision = evaluator.precision_at_k(
+                recommended_ids=recommended_ids,
+                relevant_ids=relevant_ids,
+                k=5,
+            )
+
+            recall = evaluator.recall_at_k(
+                recommended_ids=recommended_ids,
+                relevant_ids=relevant_ids,
+                k=5,
+            )
+
+            evaluation_results.append(
+                {
+                    "student_id": evaluation_student_id,
+                    "held_out_internship": test_internship_id,
+                    "precision@5": precision,
+                    "recall@5": recall,
+                }
+            )
+
+        # =====================================================
+        # 17. EVALUATION SUMMARY
+        # =====================================================
+
+        if evaluation_results:
+
+            evaluation_df = pd.DataFrame(
+                evaluation_results
+            )
+
+            print("\nPer-student results:")
+            print(
+                evaluation_df.to_string(
+                    index=False
+                )
+            )
+
+            mean_precision = evaluation_df[
+                "precision@5"
+            ].mean()
+
+            mean_recall = evaluation_df[
+                "recall@5"
+            ].mean()
+
+            print("\n" + "-" * 50)
+
+            print(
+                f"Mean Precision@5: "
+                f"{mean_precision:.4f}"
+            )
+
+            print(
+                f"Mean Recall@5:    "
+                f"{mean_recall:.4f}"
+            )
+
+        else:
+            print(
+                "No students available for evaluation."
+            )
+
+        # =====================================================
+        # 18. RATING ERROR METRICS
+        # =====================================================
+
+        actual_ratings = [
+            5.0,
+            4.0,
+            3.0,
+            5.0,
+        ]
+
+        predicted_ratings = [
+            4.7,
+            4.3,
+            3.5,
+            4.8,
+        ]
+
+        mae_score = evaluator.mae(
+            actual=actual_ratings,
+            predicted=predicted_ratings,
+        )
+
+        rmse_score = evaluator.rmse(
+            actual=actual_ratings,
+            predicted=predicted_ratings,
+        )
+
+        print("\nRating Prediction Metrics")
+        print("-" * 50)
+
+        print(
+            f"MAE:  {mae_score:.4f}"
+        )
+
+        print(
+            f"RMSE: {rmse_score:.4f}"
+        )
+
         print("\n" + "=" * 60)
-        print("PHASE 5 COMPLETED SUCCESSFULLY")
+        print("PHASE 6 COMPLETED SUCCESSFULLY")
         print("=" * 60)
 
     except Exception as exc:

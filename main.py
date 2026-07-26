@@ -12,6 +12,7 @@ from src.validation import (
 from src.user_item_matrix import create_user_item_matrix
 from src.collaborative_recommender import CollaborativeRecommender
 from src.content_recommender import ContentBasedRecommender
+from src.hybrid_recommender import HybridRecommender
 
 
 def main():
@@ -222,8 +223,108 @@ def main():
             )
         )
 
+        # =====================================================
+        # 12. HYBRID RECOMMENDER
+        # =====================================================
+
+        hybrid_recommender = HybridRecommender(
+            students=students,
+            internships=internships,
+            user_item_matrix=user_item_matrix,
+            collaborative_weight=0.6,
+            content_weight=0.4,
+        )
+
+        # =====================================================
+        # 13. HYBRID RECOMMENDATIONS
+        # =====================================================
+
+        student_id = "s001"
+
+        print("\n" + "=" * 70)
+        print(
+            f"Hybrid Recommendations for "
+            f"{student_id.upper()}"
+        )
+        print("=" * 70)
+
+        hybrid_recommendations = (
+            hybrid_recommender.recommend(
+                student_id=student_id,
+                top_n=5,
+            )
+        )
+
+        if hybrid_recommendations.empty:
+            print("No hybrid recommendations available.")
+        else:
+            print(
+                hybrid_recommendations.to_string(
+                    index=False
+                )
+            )
+
+
+        # =====================================================
+        # 14. HYBRID TEST — DATA ANALYTICS STUDENT
+        # =====================================================
+
+        student_id = "s006"
+
+        print("\n" + "=" * 70)
+        print(
+            f"Hybrid Recommendations for "
+            f"{student_id.upper()}"
+        )
+        print("=" * 70)
+
+        recommendations = hybrid_recommender.recommend(
+            student_id=student_id,
+            top_n=5,
+        )
+
+        if recommendations.empty:
+            print("No hybrid recommendations available.")
+        else:
+            print(
+                recommendations.to_string(
+                    index=False
+                )
+            )
+
+        print("\n[12] Hybrid Recommender initialized")
+
+        # =====================================================
+        # 15. HYBRID COLD-START TEST
+        # =====================================================
+
+        print("\n" + "=" * 70)
+        print("Hybrid Recommendations for NEW STUDENT")
+        print("=" * 70)
+
+        cold_start_recommendations = (
+            hybrid_recommender.recommend_new_student(
+                skills=[
+                    "python",
+                    "machine learning",
+                    "pandas",
+                    "scikit-learn",
+                ],
+                interests="ai|data science",
+                domain="AI",
+                experience_level="intermediate",
+                top_n=5,
+            )
+        )
+
+        print(
+            cold_start_recommendations.to_string(
+                index=False
+            )
+        )
+
         print("\n" + "=" * 60)
-        print("PHASE 4 COMPLETED SUCCESSFULLY")
+        print("PHASE 5 COMPLETED SUCCESSFULLY")
         print("=" * 60)
 
     except Exception as exc:

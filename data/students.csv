@@ -1,0 +1,11 @@
+student_id,name,skills,interests,domain,experience_level
+S001,Aarav,"python|pandas|machine learning|data science","ai|analytics",AI,intermediate
+S002,Priya,"java|spring boot|sql","backend|web development",Web,intermediate
+S003,Rahul,"python|django|javascript|html|css","web development|backend",Web,beginner
+S004,Neha,"python|tensorflow|deep learning|opencv","ai|computer vision",AI,advanced
+S005,Arjun,"java|android|kotlin","mobile development|android",Mobile,intermediate
+S006,Ishita,"python|pandas|numpy|sql|power bi","analytics|business intelligence",Data Analytics,intermediate
+S007,Rohan,"javascript|react|node.js|mongodb","frontend|full stack",Web,intermediate
+S008,Kavya,"python|scikit-learn|pandas|numpy","machine learning|data science",AI,intermediate
+S009,Vivek,"sql|excel|power bi|tableau","analytics|visualization",Data Analytics,beginner
+S010,Ananya,"python|nlp|transformers|pytorch","ai|natural language processing",AI,advanced

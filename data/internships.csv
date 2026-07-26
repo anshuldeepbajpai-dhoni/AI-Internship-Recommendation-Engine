@@ -1,0 +1,13 @@
+internship_id,title,company,required_skills,domain,duration,experience_level
+I001,AI Intern,TechNova,"python|machine learning|scikit-learn",AI,3 months,intermediate
+I002,Data Analyst Intern,DataVision,"python|pandas|sql|excel",Data Analytics,3 months,beginner
+I003,Machine Learning Intern,MLWorks,"python|numpy|pandas|scikit-learn|machine learning",AI,6 months,intermediate
+I004,Java Developer Intern,CodeSphere,"java|spring boot|sql",Web,6 months,intermediate
+I005,Full Stack Intern,WebCraft,"javascript|react|node.js|mongodb",Web,3 months,intermediate
+I006,Python Web Developer,CloudSoft,"python|django|html|css|javascript",Web,3 months,beginner
+I007,Computer Vision Intern,VisionAI,"python|opencv|deep learning|tensorflow",AI,6 months,advanced
+I008,Business Intelligence Intern,InsightLabs,"sql|excel|power bi|tableau",Data Analytics,3 months,beginner
+I009,NLP Intern,LanguageAI,"python|nlp|transformers|pytorch",AI,6 months,advanced
+I010,Android Developer Intern,AppWorks,"java|kotlin|android",Mobile,3 months,intermediate
+I011,Data Science Intern,DataMind,"python|pandas|numpy|scikit-learn|sql",AI,6 months,intermediate
+I012,Frontend Developer Intern,PixelLabs,"javascript|react|html|css",Web,3 months,beginner

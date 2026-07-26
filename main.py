@@ -11,6 +11,7 @@ from src.validation import (
 )
 from src.user_item_matrix import create_user_item_matrix
 from src.collaborative_recommender import CollaborativeRecommender
+from src.content_recommender import ContentBasedRecommender
 
 
 def main():
@@ -128,8 +129,101 @@ def main():
                     )
                 )
 
+        # =====================================================
+        # 8. CONTENT-BASED RECOMMENDER
+        # =====================================================
+
+        content_recommender = ContentBasedRecommender(
+            students=students,
+            internships=internships,
+        )
+
+        print("\n[8] Content-Based Recommender initialized")
+
+        # =====================================================
+        # 9. CONTENT-BASED RECOMMENDATIONS
+        # =====================================================
+
+        student_id = "s001"
+
+        print("\n" + "=" * 70)
+        print(
+            f"Content-Based Recommendations for "
+            f"{student_id.upper()}"
+        )
+        print("=" * 70)
+
+        content_recommendations = (
+            content_recommender.recommend(
+                student_id=student_id,
+                top_n=5,
+            )
+        )
+
+        print(
+            content_recommendations.to_string(
+                index=False
+            )
+        )
+
+        # =====================================================
+        # 10. TEST DATA ANALYTICS STUDENT
+        # =====================================================
+
+        student_id = "s006"
+
+        print("\n" + "=" * 70)
+        print(
+            f"Content-Based Recommendations for "
+            f"{student_id.upper()}"
+        )
+        print("=" * 70)
+
+        analytics_recommendations = (
+            content_recommender.recommend(
+                student_id=student_id,
+                top_n=5,
+            )
+        )
+
+        print(
+            analytics_recommendations.to_string(
+                index=False
+            )
+        )
+
+        # =====================================================
+        # 11. COLD-START STUDENT
+        # =====================================================
+
+        print("\n" + "=" * 70)
+        print("Recommendations for NEW STUDENT")
+        print("=" * 70)
+
+        new_student_recommendations = (
+            content_recommender.recommend_new_student(
+                skills=[
+                    "python",
+                    "pandas",
+                    "numpy",
+                    "sql",
+                    "machine learning",
+                ],
+                interests="data science|ai|analytics",
+                domain="AI",
+                experience_level="intermediate",
+                top_n=5,
+            )
+        )
+
+        print(
+            new_student_recommendations.to_string(
+                index=False
+            )
+        )
+
         print("\n" + "=" * 60)
-        print("PHASE 3 COMPLETED SUCCESSFULLY")
+        print("PHASE 4 COMPLETED SUCCESSFULLY")
         print("=" * 60)
 
     except Exception as exc:
